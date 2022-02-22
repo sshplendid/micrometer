@@ -15,56 +15,19 @@
  */
 package io.micrometer.core.instrument;
 
+import io.micrometer.api.instrument.Clock;
+import io.micrometer.api.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.*;
 import io.micrometer.core.instrument.util.MeterEquivalence;
 import io.micrometer.core.lang.Nullable;
 
-public abstract class AbstractDistributionSummary extends AbstractMeter implements DistributionSummary {
-    protected final Histogram histogram;
-    private final double scale;
+/**
+ * Deprecated - scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.AbstractDistributionSummary}.
+ */
+@Deprecated
+public abstract class AbstractDistributionSummary extends io.micrometer.api.instrument.AbstractDistributionSummary {
 
-    protected AbstractDistributionSummary(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, double scale,
-                                          boolean supportsAggregablePercentiles) {
-        super(id);
-        this.scale = scale;
-
-        if (distributionStatisticConfig.isPublishingPercentiles()) {
-            // hdr-based histogram
-            this.histogram = new TimeWindowPercentileHistogram(clock, distributionStatisticConfig, supportsAggregablePercentiles);
-        } else if (distributionStatisticConfig.isPublishingHistogram()) {
-            // fixed boundary histograms, which have a slightly better memory footprint
-            // when we don't need Micrometer-computed percentiles
-            this.histogram = new TimeWindowFixedBoundaryHistogram(clock, distributionStatisticConfig, supportsAggregablePercentiles);
-        } else {
-            // noop histogram
-            this.histogram = NoopHistogram.INSTANCE;
-        }
-    }
-
-    @Override
-    public final void record(double amount) {
-        if (amount >= 0) {
-            double scaledAmount = this.scale * amount;
-            histogram.recordDouble(scaledAmount);
-            recordNonNegative(scaledAmount);
-        }
-    }
-
-    protected abstract void recordNonNegative(double amount);
-
-    @Override
-    public HistogramSnapshot takeSnapshot() {
-        return histogram.takeSnapshot(count(), totalAmount(), max());
-    }
-
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    @Override
-    public boolean equals(@Nullable Object o) {
-        return MeterEquivalence.equals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return MeterEquivalence.hashCode(this);
+    protected AbstractDistributionSummary(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, double scale, boolean supportsAggregablePercentiles) {
+        super(id, clock, distributionStatisticConfig, scale, supportsAggregablePercentiles);
     }
 }

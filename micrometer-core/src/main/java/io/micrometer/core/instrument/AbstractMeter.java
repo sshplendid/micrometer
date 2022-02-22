@@ -15,15 +15,13 @@
  */
 package io.micrometer.core.instrument;
 
-public abstract class AbstractMeter implements Meter {
-    private final Meter.Id id;
+/**
+ * Deprecated - scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.Meter}.
+ */
+@Deprecated
+public abstract class AbstractMeter extends io.micrometer.api.instrument.AbstractMeter {
 
     public AbstractMeter(Id id) {
-        this.id = id;
-    }
-
-    @Override
-    public Id getId() {
-        return id;
+        super(id);
     }
 }

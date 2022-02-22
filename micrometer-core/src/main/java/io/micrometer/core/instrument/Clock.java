@@ -15,44 +15,29 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.instrument.step.StepLong;
-
 /**
  * Used to measure absolute and relative time.
  *
  * @see MockClock for a clock that can be manually advanced for use in tests.
  * @author Jon Schneider
+ * @deprecated scheduled for removal in 2.0.0, please use {@link io.micrometer.api.instrument.Clock}
  */
-public interface Clock {
+@Deprecated
+public interface Clock extends io.micrometer.api.instrument.Clock {
+
+    /**
+     * Deprecated - scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.Clock#SYSTEM}.
+     */
+    @Deprecated
     Clock SYSTEM = new Clock() {
         @Override
         public long wallTime() {
-            return System.currentTimeMillis();
+            return io.micrometer.api.instrument.Clock.SYSTEM.wallTime();
         }
 
         @Override
         public long monotonicTime() {
-            return System.nanoTime();
+            return io.micrometer.api.instrument.Clock.SYSTEM.monotonicTime();
         }
     };
-
-    /**
-     * Current wall time in milliseconds since the epoch. Typically equivalent to
-     * System.currentTimeMillis. Should not be used to determine durations. Used
-     * for timestamping metrics being pushed to a monitoring system or for determination
-     * of step boundaries (e.g. {@link StepLong}.
-     *
-     * @return Wall time in milliseconds
-     */
-    long wallTime();
-
-    /**
-     * Current time from a monotonic clock source. The value is only meaningful when compared with
-     * another snapshot to determine the elapsed time for an operation. The difference between two
-     * samples will have a unit of nanoseconds. The returned value is typically equivalent to
-     * System.nanoTime.
-     *
-     * @return Monotonic time in nanoseconds
-     */
-    long monotonicTime();
 }

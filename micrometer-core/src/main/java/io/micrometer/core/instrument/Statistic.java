@@ -19,7 +19,9 @@ package io.micrometer.core.instrument;
  * A description of the value contained in a measurement.
  *
  * @author Jon Schneider
+ * @deprecated scheduled for removal in 2.0.0, please use {@link io.micrometer.api.instrument.Statistic}
  */
+@Deprecated
 public enum Statistic {
     /**
      * The sum of the amounts recorded.

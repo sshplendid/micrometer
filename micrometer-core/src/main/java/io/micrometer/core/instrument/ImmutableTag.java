@@ -25,46 +25,12 @@ import static java.util.Objects.requireNonNull;
  * Immutable {@link Tag}.
  *
  * @author Jon Schneider
+ * @deprecated scheduled for removal in 2.0.0, please use {@link io.micrometer.api.instrument.Counter}
  */
-public class ImmutableTag implements Tag {
-    private final String key;
-    private final String value;
+@Deprecated
+public class ImmutableTag extends io.micrometer.api.instrument.ImmutableTag implements Tag {
 
     public ImmutableTag(String key, String value) {
-        requireNonNull(key);
-        requireNonNull(value);
-        this.key = key;
-        this.value = value;
-    }
-
-    @Override
-    public String getKey() {
-        return key;
-    }
-
-    @Override
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public boolean equals(@Nullable Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tag that = (Tag) o;
-        return Objects.equals(key, that.getKey()) &&
-            Objects.equals(value, that.getValue());
-    }
-
-    @Override
-    public int hashCode() {
-        int result = key.hashCode();
-        result = 31 * result + value.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "tag(" + key + "=" + value + ")";
+        super(key, value);
     }
 }

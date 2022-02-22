@@ -17,37 +17,19 @@ package io.micrometer.core.instrument;
 
 import java.util.function.Supplier;
 
+import io.micrometer.api.instrument.Statistic;
+
 /**
  * A measurement sampled from a meter.
  *
  * @author Clint Checketts
  * @author Jon Schneider
+ * @deprecated scheduled for removal in 2.0.0, please use {@link io.micrometer.api.instrument.Measurement}
  */
-public class Measurement {
-    private final Supplier<Double> f;
-    private final Statistic statistic;
+@Deprecated
+public class Measurement extends io.micrometer.api.instrument.Measurement {
 
     public Measurement(Supplier<Double> valueFunction, Statistic statistic) {
-        this.f = valueFunction;
-        this.statistic = statistic;
-    }
-
-    /**
-     * @return Value for the measurement.
-     */
-    public double getValue() {
-        return f.get();
-    }
-
-    public Statistic getStatistic() {
-        return statistic;
-    }
-
-    @Override
-    public String toString() {
-        return "Measurement{" +
-                "statistic='" + statistic + '\'' +
-                ", value=" + getValue() +
-                '}';
+        super(valueFunction, statistic);
     }
 }

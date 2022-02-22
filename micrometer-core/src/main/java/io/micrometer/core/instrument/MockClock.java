@@ -15,38 +15,16 @@
  */
 package io.micrometer.core.instrument;
 
-import io.micrometer.core.instrument.util.TimeUtils;
+/**
+ * Deprecated - scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.MockClock}.
+ */
+@Deprecated
+public class MockClock extends io.micrometer.api.instrument.MockClock {
 
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-
-public class MockClock implements Clock {
-    // has to be non-zero to prevent divide-by-zeroes and other weird math results based on the clock
-    private long timeNanos = (long) TimeUtils.millisToUnit(1, TimeUnit.NANOSECONDS);
-
-    @Override
-    public long monotonicTime() {
-        return timeNanos;
-    }
-
-    @Override
-    public long wallTime() {
-        return TimeUnit.MILLISECONDS.convert(timeNanos, TimeUnit.NANOSECONDS);
-    }
-
-    public long add(long amount, TimeUnit unit) {
-        timeNanos += unit.toNanos(amount);
-        return timeNanos;
-    }
-
-    public long add(Duration duration) {
-        return add(duration.toNanos(), TimeUnit.NANOSECONDS);
-    }
-
-    public long addSeconds(long amount) {
-        return add(amount, TimeUnit.SECONDS);
-    }
-
+    /**
+     * Deprecated - scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.MockClock}.
+     */
+    @Deprecated
     public static MockClock clock(MeterRegistry registry) {
         return (MockClock) registry.config().clock();
     }

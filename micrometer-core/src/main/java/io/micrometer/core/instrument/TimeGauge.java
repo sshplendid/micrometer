@@ -28,8 +28,14 @@ import java.util.function.ToDoubleFunction;
  *
  * @author Jon Schneider
  * @author Johnny Lim
+ * @deprecated scheduled for removal in 2.0.0, please use {@link io.micrometer.api.instrument.TimeGauge}
  */
-public interface TimeGauge extends Gauge {
+@Deprecated
+public interface TimeGauge extends io.micrometer.api.instrument.TimeGauge {
+    /**
+     * Deprecated - scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.TimeGauge}.
+     */
+    @Deprecated
     static <T> Builder<T> builder(String name, @Nullable T obj, TimeUnit fUnits, ToDoubleFunction<T> f) {
         return new Builder<>(name, obj, fUnits, f);
     }
@@ -43,29 +49,15 @@ public interface TimeGauge extends Gauge {
      * @param fUnits time unit
      * @return A new time gauge builder.
      * @since 1.7.0
+     * @deprecated scheduled for removal in 2.0.0, please use {@link io.micrometer.api.instrument.TimeGauge}
      */
     @Incubating(since = "1.7.0")
+    @Deprecated
     static Builder<Supplier<Number>> builder(String name, Supplier<Number> f, TimeUnit fUnits) {
         return new Builder<>(name, f, fUnits, f2 -> {
             Number val = f2.get();
             return val == null ? Double.NaN : val.doubleValue();
         }).strongReference(true);
-    }
-
-    /**
-     * @return The base time unit of the timer to which all published metrics will be scaled
-     */
-    TimeUnit baseTimeUnit();
-
-    /**
-     * The act of observing the value by calling this method triggers sampling
-     * of the underlying number or user-defined function that defines the value for the gauge.
-     *
-     * @param unit The base unit of time to scale the value to.
-     * @return The current value, scaled to the appropriate base unit.
-     */
-    default double value(TimeUnit unit) {
-        return TimeUtils.convert(value(), baseTimeUnit(), unit);
     }
 
     /**
