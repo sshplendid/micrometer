@@ -18,6 +18,10 @@ package io.micrometer.core.instrument.composite;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 
+/**
+ * @deprecated Scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.composite.CompositeMeter}.
+ */
+@Deprecated
 interface CompositeMeter extends Meter {
     void add(MeterRegistry registry);
 

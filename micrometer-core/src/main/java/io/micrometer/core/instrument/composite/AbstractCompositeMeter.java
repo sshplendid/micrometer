@@ -34,7 +34,7 @@ abstract class AbstractCompositeMeter<T extends Meter> extends AbstractMeter imp
     @Nullable
     private volatile T noopMeter;
 
-    AbstractCompositeMeter(Id id) {
+    AbstractCompositeMeter(Meter.Id id) {
         super(id);
     }
 

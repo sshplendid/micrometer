@@ -16,6 +16,7 @@
 package io.micrometer.core.instrument.composite;
 
 import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
@@ -33,7 +34,7 @@ class CompositeTimer extends AbstractCompositeMeter<Timer> implements Timer {
     private final DistributionStatisticConfig distributionStatisticConfig;
     private final PauseDetector pauseDetector;
 
-    CompositeTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector) {
+    CompositeTimer(Meter.Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector) {
         super(id);
         this.clock = clock;
         this.distributionStatisticConfig = distributionStatisticConfig;

@@ -23,6 +23,10 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
+/**
+ * @deprecated Scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.distribution.HistogramSnapshot}.
+ */
+@Deprecated
 public final class HistogramSnapshot {
     private static final ValueAtPercentile[] EMPTY_VALUES = new ValueAtPercentile[0];
     private static final CountAtBucket[] EMPTY_COUNTS = new CountAtBucket[0];

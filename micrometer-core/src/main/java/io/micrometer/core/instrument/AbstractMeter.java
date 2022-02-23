@@ -16,7 +16,7 @@
 package io.micrometer.core.instrument;
 
 /**
- * Deprecated - scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.Meter}.
+ * @deprecated Scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.Meter}.
  */
 @Deprecated
 public abstract class AbstractMeter extends io.micrometer.api.instrument.AbstractMeter {

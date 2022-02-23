@@ -22,6 +22,10 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
+/**
+ * @deprecated Scheduled for removal in 2.0.0. Please use {@link io.micrometer.api.instrument.noop.NoopMeter}.
+ */
+@Deprecated
 public class NoopMeter extends AbstractMeter {
     public NoopMeter(Id id) {
         super(id);
