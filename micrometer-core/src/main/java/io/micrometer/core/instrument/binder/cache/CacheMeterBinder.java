@@ -16,12 +16,9 @@
 package io.micrometer.core.instrument.binder.cache;
 
 import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.lang.NonNullApi;
 import io.micrometer.core.lang.NonNullFields;
 import io.micrometer.core.lang.Nullable;
-
-import java.lang.ref.WeakReference;
 
 /**
  * A common base class for cache metrics that ensures that all caches are instrumented
@@ -41,6 +38,11 @@ public abstract class CacheMeterBinder<C> extends io.micrometer.binder.cache.Cac
 
     public CacheMeterBinder(C cache, String cacheName, Iterable<Tag> tags) {
         super(cache, cacheName, tags);
+    }
+
+    @Nullable
+    protected C getCache() {
+        return super.getCache();
     }
 
     /**
