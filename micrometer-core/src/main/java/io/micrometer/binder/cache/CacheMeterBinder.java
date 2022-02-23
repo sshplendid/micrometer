@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micrometer.core.instrument.binder.cache;
+package io.micrometer.binder.cache;
 
-import io.micrometer.core.instrument.*;
+import java.lang.ref.WeakReference;
+
+import io.micrometer.core.instrument.FunctionCounter;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.lang.NonNullApi;
 import io.micrometer.core.lang.NonNullFields;
 import io.micrometer.core.lang.Nullable;
-
-import java.lang.ref.WeakReference;
 
 /**
  * A common base class for cache metrics that ensures that all caches are instrumented
@@ -32,15 +36,70 @@ import java.lang.ref.WeakReference;
  * in a dimensional slice that spans different cache implementations in your application.
  *
  * @author Jon Schneider
- * @deprecated scheduled for removal in 2.0.0, please use {@link io.micrometer.binder.cache.CacheMeterBinder}
  */
 @NonNullApi
 @NonNullFields
-@Deprecated
-public abstract class CacheMeterBinder<C> extends io.micrometer.binder.cache.CacheMeterBinder<C> {
+public abstract class CacheMeterBinder<C> implements MeterBinder {
+    private final WeakReference<C> cacheRef;
+    private final Iterable<Tag> tags;
 
     public CacheMeterBinder(C cache, String cacheName, Iterable<Tag> tags) {
-        super(cache, cacheName, tags);
+        this.tags = Tags.concat(tags, "cache", cacheName);
+        this.cacheRef = new WeakReference<>(cache);
+    }
+
+    @Nullable
+    protected C getCache() {
+        return cacheRef.get();
+    }
+
+    @Override
+    public final void bindTo(MeterRegistry registry) {
+        C cache = getCache();
+        if (size() != null) {
+            Gauge.builder("cache.size", cache,
+                    c -> {
+                        Long size = size();
+                        return size == null ? 0 : size;
+                    })
+                    .tags(tags)
+                    .description("The number of entries in this cache. This may be an approximation, depending on the type of cache.")
+                    .register(registry);
+        }
+
+        if (missCount() != null) {
+            FunctionCounter.builder("cache.gets", cache,
+                    c -> {
+                        Long misses = missCount();
+                        return misses == null ? 0 : misses;
+                    })
+                    .tags(tags).tag("result", "miss")
+                    .description("the number of times cache lookup methods have returned an uncached (newly loaded) value, or null")
+                    .register(registry);
+        }
+
+        FunctionCounter.builder("cache.gets", cache, c -> hitCount())
+                .tags(tags).tag("result", "hit")
+                .description("The number of times cache lookup methods have returned a cached value.")
+                .register(registry);
+
+        FunctionCounter.builder("cache.puts", cache, c -> putCount())
+                .tags(tags)
+                .description("The number of entries added to the cache")
+                .register(registry);
+
+        if (evictionCount() != null) {
+            FunctionCounter.builder("cache.evictions", cache,
+                    c -> {
+                        Long evictions = evictionCount();
+                        return evictions == null ? 0 : evictions;
+                    })
+                    .tags(tags)
+                    .description("cache evictions")
+                    .register(registry);
+        }
+
+        bindImplementationSpecificMetrics(registry);
     }
 
     /**
@@ -91,4 +150,8 @@ public abstract class CacheMeterBinder<C> extends io.micrometer.binder.cache.Cac
      * @param registry The registry to bind metrics to.
      */
     protected abstract void bindImplementationSpecificMetrics(MeterRegistry registry);
+
+    protected Iterable<Tag> getTagsWithCacheName() {
+        return tags;
+    }
 }
